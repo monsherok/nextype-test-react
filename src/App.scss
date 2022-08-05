@@ -1,0 +1,291 @@
+@use "sass:math";
+@import "./mixins/mixins.scss";
+
+$fontFamily: "Roboto";
+$fontSize: rem(16); // где 14(px) - размер шрифта по умолчанию из макета
+// Основные цвета
+$mainColor: #19191e; // Цвет шрифта по умолчанию
+// Минимальная ширина страницы
+$minWidth: 320;
+// Ширина полотна (макета)
+$maxWidth: 1330;
+// Ширина ограничивающего контейнера (0 = нет ограничения)
+$maxWidthContainer: 1330;
+// Общий отступ у контейнера
+// (30 = по 15px слева и справа, 0 = нет отступа)
+$containerPadding: 32;
+// Тип адаптива:
+// 1 = отзывчивость (у контейнера нет брейкпоинтов),
+// 2 = по брейк-поинтам (контейнер меняет свою ширину по брейк-поинтам)
+$responsiveType: 1;
+// Ширина страбатывания первого брейкпоинта
+$containerWidth: $maxWidthContainer + $containerPadding;
+
+@if ($responsiveType==1) {
+	// Отзывчивая
+	[class*="__container"] {
+		@if ($maxWidthContainer>0) {
+			max-width: rem($maxWidthContainer);
+			box-sizing: content-box;
+			margin: 0 auto;
+		}
+		@if ($containerPadding>0) {
+			padding: 0 rem(math.div($containerPadding, 2));
+		}
+	}
+} @else {
+	// По брейк-поинтам
+	[class*="__container"] {
+		margin: 0 auto;
+		@if ($maxWidthContainer>0) {
+			max-width: rem($maxWidthContainer);
+			box-sizing: content-box;
+		} @else {
+			@if ($containerPadding>0) {
+				padding: 0 rem(math.div($containerPadding, 2));
+			}
+		}
+		@media (max-width: $pc) {
+			max-width: rem(970);
+		}
+		@media (max-width: $tablet) {
+			max-width: rem(750);
+		}
+		@media (max-width: $mobile) {
+			max-width: none;
+			@if ($containerPadding>0 and $maxWidthContainer>0) {
+				padding: 0 rem(math.div($containerPadding, 2));
+			}
+		}
+	}
+}
+
+@import "./mixins/null.scss";
+
+body {
+	font-family: "Roboto", sans-serif;
+}
+
+.App {
+	margin: 0 auto;
+	padding-bottom: 80px;
+}
+.App-header {
+	@include adaptiveValue("padding-top", 56, 32);
+}
+.header {
+	//.header__title
+	&__title {
+		font-weight: 700;
+		font-size: rem(32);
+		line-height: math.div(40, 32);
+		margin-bottom: rem(16);
+	}
+	// .header__subtitle
+	&__subtitle {
+		font-weight: 400;
+		font-size: rem(16);
+		line-height: math.div(24, 16);
+		margin-bottom: rem(32);
+	}
+}
+.tabs {
+	// .tabs__inner
+	&__inner {
+	}
+	// .tabs__names
+	&__names {
+		margin-bottom: 32px;
+		border-bottom: 1px solid #e1e1e6;
+	}
+	// .tabs__content
+	&__content {
+	}
+}
+.tab {
+	// .tab__name
+	&__name {
+		font-weight: 700;
+		font-size: rem(18);
+		line-height: math.div(26, 18);
+		color: #4a4a4f;
+		padding-bottom: 16px;
+		position: relative;
+		&.active {
+			&::before {
+				content: "";
+				position: absolute;
+				width: 100%;
+				bottom: -1px;
+				border-bottom: 2px solid #2244cc;
+			}
+		}
+		&:not(:last-child) {
+			margin-right: 40px;
+		}
+	}
+	// .tab__content
+	&__content {
+		width: rem(320);
+		height: rem(472);
+		overflow-y: hidden;
+		overflow-x: hidden;
+		position: relative;
+		border: 1px solid #e1e1e6;
+		padding-bottom: 75px;
+		// @media (min-width: 1100px) {
+			&:hover {
+				& .tab__content-image {
+					height: 0;
+					overflow-y: auto;
+				}
+				& .tab__content-inner {
+					overflow-y: auto;
+					overflow-x: hidden;
+					height: 100%;
+				}
+			}
+		// }
+	}
+	// .tab__content-inner
+	&__content-inner {
+		padding: 32px 24px 75px 28px;
+		margin-right: 24px;
+		&::-webkit-scrollbar {
+			width: 1px;
+			background-color: rgba(225, 225, 230, 1);
+	  }
+	  &::-webkit-scrollbar-thumb {
+		background-color: rgba(34, 68, 204, 1)
+  }
+	}
+	// .tab__content-image
+	&__content-image {
+		transition: all ease-in 0.2s;
+		height: rem(320);
+		width: rem(320);
+	}
+	// .tab__content-description
+	&__content-description {
+		font-weight: 400;
+		font-size: rem(16);
+		line-height: math.div(24, 16);
+		margin-bottom: rem(24);
+		
+	}
+	// .tab__content-tag
+	&__content-tag {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 5px;
+		font-weight: 400;
+		font-size: rem(16);
+		line-height: math.div(24, 16);
+		color: #2244cc;
+		a {
+			overflow: hidden;
+			word-wrap: none;
+			text-overflow: ellipsis;
+		}
+	}
+}
+
+// ======= Кастомизация Слайдера =========
+
+#splide01-track {
+	padding-left: 0px !important;
+}
+
+.splide__pagination {
+	counter-reset: pagination-num;
+	position: absolute;
+	bottom: -40px;
+}
+
+.splide__pagination__page {
+	background: #191928;
+	opacity: 0.5;
+	width: rem(16);
+	height: rem(4);
+	border-radius: 0;
+	&:not(:last-child) {
+		margin-right: 8px;
+	}
+	&.is-active {
+		width: rem(24);
+		background: #2244cc;
+		opacity: 1;
+		margin-right: 8px;
+		margin-left: 8px;
+	}
+}
+
+.splide__slide {
+	width: rem(320) !important;
+	position: relative;
+	margin-bottom: 35px;
+	cursor: pointer;
+	@media (min-width: 1100px) {
+		&:hover {
+			box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.1);
+		}
+	}
+	&::before {
+		content: "";
+		position: absolute;
+		width: 99%;
+		background-color: #fff;
+		height: rem(32);
+		bottom: 1px;
+		left: 1px;
+		z-index: 5;
+	}
+	&::after {
+		content: "";
+		position: absolute;
+		width: 99%;
+		background: linear-gradient(180deg, rgba(255, 255, 255, 0) 21.88%, #ffffff 100%);
+		height: rem(48);
+		bottom: 32px;
+		left: 1px;
+	}
+	&:hover {
+		&::before {
+			content: "";
+			height: rem(0);
+		}
+		&::after {
+			content: "";
+			height: rem(0);
+		}
+	}
+}
+
+.splide__arrow.splide__arrow--prev {
+	width: rem(44);
+	height: rem(44);
+	background-color: #ffffff;
+	border-radius: 2px;
+	top: rem(178);
+	left: rem(-22);
+	background-image: url("./icons/arrow-left.svg");
+	background-repeat: no-repeat;
+	background-position: center;
+	svg {
+		display: none;
+	}
+}
+.splide__arrow.splide__arrow--next {
+	width: rem(44);
+	height: rem(44);
+	background-color: #ffffff;
+	border-radius: 2px;
+	top: rem(178);
+	right: rem(-22);
+	background-image: url("./icons/arrow-right.svg");
+	background-repeat: no-repeat;
+	background-position: center;
+	svg {
+		display: none;
+	}
+}
